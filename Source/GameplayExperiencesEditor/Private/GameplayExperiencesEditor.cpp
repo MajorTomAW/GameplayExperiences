@@ -2,6 +2,7 @@
 #include "GameFeaturesExtensionEditor.h"
 #include "Engine/AssetManager.h"
 #include "Modules/ModuleManager.h"
+#include "Styles/GameplayExperienceEditorStyle.h"
 
 #define LOCTEXT_NAMESPACE "FGameplayExperiencesEditorModule"
 
@@ -11,6 +12,8 @@ class FGameplayExperiencesEditorModule : public FDefaultModuleImpl
 	{
 		UAssetManager::CallOrRegister_OnAssetManagerCreated(
 			FSimpleMulticastDelegate::FDelegate::CreateRaw(this, &FGameplayExperiencesEditorModule::OnAssetManagerCreated));
+
+		FGameplayExperienceEditorStyle::Get();
 	}
 	
 

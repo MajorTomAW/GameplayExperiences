@@ -1,13 +1,13 @@
-// Copyright Epic Games, Inc. All Rights Reserved.
+// Copyright © 2024 Playton. All Rights Reserved.
 
 #pragma once
 
 #include "AssetDefinitionDefault.h"
 
-#include "AssetDefinition_ExperienceDefinition.generated.h"
+#include "AssetDefinition_PawnData.generated.h"
 
 UCLASS()
-class UAssetDefinition_ExperienceDefinition : public UAssetDefinitionDefault
+class UAssetDefinition_PawnData : public UAssetDefinitionDefault
 {
 	GENERATED_BODY()
 

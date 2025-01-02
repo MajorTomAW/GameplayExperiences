@@ -8,7 +8,9 @@ public class GameplayExperiencesRuntime : ModuleRules
         { 
             "Core",
             "GameFeatures",
-            "GameFeaturesExtension"
+            "GameFeaturesExtension",
+            "ModularGameplay",
+            "ModularGameplayActors",
         });
 
         PrivateDependencyModuleNames.AddRange(new[]

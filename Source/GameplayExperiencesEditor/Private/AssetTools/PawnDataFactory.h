@@ -1,18 +1,18 @@
-// Copyright Epic Games, Inc. All Rights Reserved.
+// Copyright © 2024 Playton. All Rights Reserved.
 
 #pragma once
 
-#include "Factories/BlueprintFactory.h"
+#include "Factories/Factory.h"
 
-#include "ExperienceDefinitionFactory.generated.h"
+#include "PawnDataFactory.generated.h"
 
 UCLASS(HideCategories = Object, Config = Editor)
-class UExperienceDefinitionFactory : public UBlueprintFactory
+class UPawnDataFactory : public UFactory
 {
 	GENERATED_BODY()
 
 public:
-	UExperienceDefinitionFactory();
+	UPawnDataFactory();
 
 protected:
 	//~ Begin UFactory Interface
@@ -23,5 +23,5 @@ protected:
 
 private:
 	UPROPERTY(Config)
-	TArray<TObjectPtr<UClass>> CommonExperienceClasses;
+	TArray<TObjectPtr<UClass>> CommonPawnDataClasses;
 };

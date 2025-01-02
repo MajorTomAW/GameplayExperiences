@@ -7,7 +7,7 @@
 
 #include UE_INLINE_GENERATED_CPP_BY_NAME(AssetDefinition_ExperienceDefinition)
 
-#define LOCTEXT_NAMESPACE "GameFeaturesEditor"
+#define LOCTEXT_NAMESPACE "GameplayExperiencesEditor"
 
 FText UAssetDefinition_ExperienceDefinition::GetAssetDisplayName() const
 {

@@ -11,7 +11,7 @@
 
 #include UE_INLINE_GENERATED_CPP_BY_NAME(ExperienceDefinitionFactory)
 
-#define LOCTEXT_NAMESPACE "GameFeaturesEditor"
+#define LOCTEXT_NAMESPACE "GameplayExperiencesEditor"
 
 UExperienceDefinitionFactory::UExperienceDefinitionFactory()
 {
@@ -27,11 +27,11 @@ UExperienceDefinitionFactory::UExperienceDefinitionFactory()
 	GetDerivedClasses(ParentClass, DerivedClasses, false);
 	bSkipClassPicker = DerivedClasses.Num() == 0;
 
-	OnConfigurePropertiesDelegate.BindLambda([](FClassViewerInitializationOptions* Options)
+	OnConfigurePropertiesDelegate.BindLambda([&](FClassViewerInitializationOptions* Options)
 	{
 		Options->bShowNoneOption = false;
 		Options->ClassFilters.Add(MakeShareable(new FGameplayExperiencesClassFilter(UExperienceDefinition::StaticClass())));
-		Options->ExtraPickerCommonClasses.Reset();
+		Options->ExtraPickerCommonClasses = CommonExperienceClasses;
 	});
 }
 

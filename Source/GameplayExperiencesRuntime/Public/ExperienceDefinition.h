@@ -8,6 +8,7 @@
 
 #include "ExperienceDefinition.generated.h"
 
+class UExperiencePawnData;
 class UGameFeatureActionSet;
 class UGameFeatureAction;
 struct FPrimaryAssetTypeInfo;
@@ -51,4 +52,8 @@ public:
 	/** List of additional Game Feature Action Sets to compose into this experience */
 	UPROPERTY(EditDefaultsOnly, Category = "Actions")
 	TArray<TObjectPtr<UGameFeatureActionSet>> FeatureActionSets;
+
+	/** The default pawn data used by this experience */
+	UPROPERTY(EditDefaultsOnly, Category = "Gameplay")
+	TObjectPtr<const UExperiencePawnData> DefaultPawnData;
 };
