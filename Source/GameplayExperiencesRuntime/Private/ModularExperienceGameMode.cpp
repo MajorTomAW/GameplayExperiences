@@ -16,6 +16,7 @@
 #include "ExperiencePawnData.h"
 #include "ExperienceWorldSettings.h"
 #include "GameplayExperiencesLog.h"
+#include "ModularExperienceGameState.h"
 #include "Engine/AssetManager.h"
 #include "Kismet/GameplayStatics.h"
 
@@ -28,6 +29,7 @@ AModularExperienceGameModeBase::AModularExperienceGameModeBase(const FObjectInit
 	: Super(ObjectInitializer)
 {
 	PlayerStateClass = AExperiencePlayerState::StaticClass();
+	GameStateClass = AModularExperienceGameState::StaticClass();
 }
 
 const UExperiencePawnData* AModularExperienceGameModeBase::GetPawnDataForController(const AController* InController) const
@@ -37,7 +39,10 @@ const UExperiencePawnData* AModularExperienceGameModeBase::GetPawnDataForControl
 	{
 		if (const AExperiencePlayerState* ExperiencePS = InController->GetPlayerState<AExperiencePlayerState>())
 		{
-			
+			if (const UExperiencePawnData* PawnData = ExperiencePS->GetPawnData())
+			{
+				return PawnData;
+			}
 		}
 	}
 
@@ -79,11 +84,6 @@ void AModularExperienceGameModeBase::HandleMatchAssignmentIfNotExpectingOne()
 	FPrimaryAssetId ExperienceId;
 	FString ExperienceIdSource;
 
-	auto ShouldContinue = [ExperienceId]()->bool
-	{
-		return !ExperienceId.IsValid();
-	};
-
 	// Precedence order (highest wins)
 	//  – Matchmaking assignment (if present)
 	//  – URL Options override
@@ -98,7 +98,7 @@ void AModularExperienceGameModeBase::HandleMatchAssignmentIfNotExpectingOne()
 	// Matchmaking assignment
 
 	// URL Options override
-	if (ShouldContinue() && UGameplayStatics::HasOption(OptionsString, TEXT("Experience")))
+	if (!ExperienceId.IsValid() && UGameplayStatics::HasOption(OptionsString, TEXT("Experience")))
 	{
 		const FString ExperienceFromOptions = UGameplayStatics::ParseOption(OptionsString, TEXT("Experience"));
 		ExperienceId = FPrimaryAssetId(FPrimaryAssetType(UExperienceDefinition::StaticClass()->GetFName()), FName(*ExperienceFromOptions));
@@ -106,13 +106,13 @@ void AModularExperienceGameModeBase::HandleMatchAssignmentIfNotExpectingOne()
 	}
 
 	// Developer Settings (PIE only)
-	if (ShouldContinue() && World->IsPlayInEditor())
+	if (!ExperienceId.IsValid() && World->IsPlayInEditor())
 	{
-		
+		ExperienceId = GetExperienceFromDeveloperSettings();
 	}
 
 	// Command Line override
-	if (ShouldContinue())
+	if (!ExperienceId.IsValid())
 	{
 		FString ExperienceFromCommandLine;
 		if (FParse::Value(FCommandLine::Get(), TEXT("Experience="), ExperienceFromCommandLine))
@@ -127,7 +127,7 @@ void AModularExperienceGameModeBase::HandleMatchAssignmentIfNotExpectingOne()
 	}
 
 	// World Settings
-	if (ShouldContinue())
+	if (!ExperienceId.IsValid())
 	{
 		if (AExperienceWorldSettings* ExperienceSettings = Cast<AExperienceWorldSettings>(GetWorldSettings()))
 		{
@@ -148,9 +148,13 @@ void AModularExperienceGameModeBase::HandleMatchAssignmentIfNotExpectingOne()
 		EXPERIENCE_LOG(Error, TEXT("Wanted to use experience '%s' but couldn't find it, falling back to the default"), *ExperienceId.ToString());
 		ExperienceId = FPrimaryAssetId();
 	}
+	else
+	{
+		EXPERIENCE_LOG(Log, TEXT("Identified experience '%s' from %s"), *ExperienceId.ToString(), *ExperienceIdSource);
+	}
 
 	// Default experience
-	if (ShouldContinue())
+	if (!ExperienceId.IsValid())
 	{
 		if (TryDedicatedServerLogin())
 		{

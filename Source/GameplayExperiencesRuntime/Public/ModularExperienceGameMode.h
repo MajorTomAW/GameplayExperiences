@@ -80,6 +80,9 @@ protected:
 
 	virtual bool TryDedicatedServerLogin();
 
+	/** Override to return the experience to load from the developer settings. (will be project-specific) */
+	virtual FPrimaryAssetId GetExperienceFromDeveloperSettings() const { return FPrimaryAssetId(); }
+
 #if WITH_EDITOR
 	//~ Begin UObject Interface
 	virtual EDataValidationResult IsDataValid(class FDataValidationContext& Context) const override;

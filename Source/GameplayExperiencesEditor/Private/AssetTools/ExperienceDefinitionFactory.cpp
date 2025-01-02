@@ -31,7 +31,12 @@ UExperienceDefinitionFactory::UExperienceDefinitionFactory()
 	{
 		Options->bShowNoneOption = false;
 		Options->ClassFilters.Add(MakeShareable(new FGameplayExperiencesClassFilter(UExperienceDefinition::StaticClass())));
+		Options->ExtraPickerCommonClasses.Reset();
 		Options->ExtraPickerCommonClasses = CommonExperienceClasses;
+		Options->bIsBlueprintBaseOnly = false;
+		Options->DisplayMode = EClassViewerDisplayMode::ListView;
+		Options->bAllowViewOptions = false;
+		Options->bShowDefaultClasses = false;
 	});
 }
 

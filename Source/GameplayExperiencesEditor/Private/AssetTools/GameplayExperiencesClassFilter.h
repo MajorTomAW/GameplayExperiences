@@ -2,7 +2,6 @@
 
 #pragma once
 
-#include "CoreMinimal.h"
 #include "ClassViewerFilter.h"
 
 class FGameplayExperiencesClassFilter : public IClassViewerFilter

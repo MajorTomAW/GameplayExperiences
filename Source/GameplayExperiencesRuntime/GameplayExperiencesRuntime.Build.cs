@@ -17,6 +17,7 @@ public class GameplayExperiencesRuntime : ModuleRules
         {
             "CoreUObject", 
             "Engine",
+            "NetCore",
         });
     }
 }

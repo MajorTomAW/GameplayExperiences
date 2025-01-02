@@ -23,6 +23,7 @@ public class GameplayExperiencesEditor : ModuleRules
                 "GameFeaturesExtensionEditor",
                 "UnrealEd",
                 "AssetDefinition",
+                "Projects",
             }
         );
     }

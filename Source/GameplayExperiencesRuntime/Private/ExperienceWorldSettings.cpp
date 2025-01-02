@@ -26,6 +26,12 @@ FPrimaryAssetId AExperienceWorldSettings::GetDefaultGameplayExperience() const
 				*GetPathNameSafe(this), *DefaultGameplayExperience.ToString());
 		}
 	}
+	else
+	{
+		EXPERIENCE_LOG(Verbose, TEXT("%s.DefaultExperience is not set."), *GetPathNameSafe(this));
+	}
+
+	EXPERIENCE_LOG(Display, TEXT("Retrieving default experience %s from world settings."), *Result.ToString());
 
 	return Result;
 }

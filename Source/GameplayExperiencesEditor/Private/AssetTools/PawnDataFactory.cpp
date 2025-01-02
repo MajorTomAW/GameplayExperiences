@@ -36,13 +36,14 @@ bool UPawnDataFactory::ConfigureProperties()
 
 	FClassViewerInitializationOptions Options;
 	Options.Mode = EClassViewerMode::ClassPicker;
-	Options.DisplayMode = EClassViewerDisplayMode::TreeView;
+	Options.DisplayMode = EClassViewerDisplayMode::ListView;
 	Options.bShowObjectRootClass = true;
 	Options.bIsBlueprintBaseOnly = false;
 	Options.bShowNoneOption = false;
 	Options.NameTypeToDisplay = EClassViewerNameTypeToDisplay::Dynamic;
 	Options.ClassFilters.Add(MakeShareable(new FGameplayExperiencesClassFilter(UExperiencePawnData::StaticClass())));
 	Options.ExtraPickerCommonClasses = CommonPawnDataClasses;
+	Options.bShowDefaultClasses = false;
 
 	const FText TitleText = LOCTEXT("CreatePawnDataTitle", "Pick Pawn Data Class");
 	UClass* ChosenClass = nullptr;
