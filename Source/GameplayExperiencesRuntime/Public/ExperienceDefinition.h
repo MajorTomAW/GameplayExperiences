@@ -17,7 +17,7 @@ struct FAssetData;
 /**
  * Defines a gameplay experience, a collection of code and content that adds a separable discrete feature to the game.
  */
-UCLASS(BlueprintType, Const)
+UCLASS(BlueprintType, Const, meta = (DisplayName = "Experience Definition"))
 class GAMEPLAYEXPERIENCESRUNTIME_API UExperienceDefinition : public UPrimaryDataAsset
 {
 	GENERATED_BODY()

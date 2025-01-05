@@ -36,6 +36,9 @@ class GAMEPLAYEXPERIENCESRUNTIME_API UExperienceManagerComponent : public UGameS
 
 public:
 	UExperienceManagerComponent(const FObjectInitializer& ObjectInitializer = FObjectInitializer::Get());
+	
+	static UExperienceManagerComponent* Get(const UObject* WorldContextObject);
+	static UExperienceManagerComponent* Get(const AGameStateBase* GameState);
 
 	//~ Begin UActorComponent Interface
 	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;

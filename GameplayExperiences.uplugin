@@ -3,7 +3,7 @@
 	"Version": 1,
 	"VersionName": "1.0",
 	"FriendlyName": "Gameplay Experiences",
-	"Description": "",
+	"Description": "Common classes for creating modular gameplay experiences.",
 	"Category": "Gameplay",
 	"CreatedBy": "MajorT",
 	"CreatedByURL": "",
@@ -41,6 +41,10 @@
 		},
 		{
 			"Name": "ModularGameplayActors",
+			"Enabled": true
+		},
+		{
+			"Name": "EnhancedInput",
 			"Enabled": true
 		}
 	]

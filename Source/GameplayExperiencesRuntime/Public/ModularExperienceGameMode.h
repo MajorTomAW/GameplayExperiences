@@ -74,9 +74,9 @@ protected:
 	void OnExperienceLoaded(const UExperienceDefinition* CurrentExperience);
 	bool IsExperienceLoaded() const;
 
-	void OnMatchAssignmentGiven(FPrimaryAssetId ExperienceId, const FString& ExperienceIdSource);
+	virtual void OnMatchAssignmentGiven(FPrimaryAssetId ExperienceId, const FString& ExperienceIdSource);
 
-	void HandleMatchAssignmentIfNotExpectingOne();
+	virtual void HandleMatchAssignmentIfNotExpectingOne();
 
 	virtual bool TryDedicatedServerLogin();
 
@@ -91,12 +91,12 @@ protected:
 
 protected:
 	/** Default pawn data to fall back to if no pawn data is found. */
-	UPROPERTY(Config, EditDefaultsOnly, BlueprintReadOnly, Category = Classes, AdvancedDisplay)
-	TSoftObjectPtr<UExperiencePawnData> DefaultPawnData;
+	UPROPERTY(Config, EditDefaultsOnly, BlueprintReadOnly, Category = Classes, AdvancedDisplay, meta = (MetaClass="/Script/GameplayExperiencesRuntime.ExperiencePawnData"))
+	FSoftObjectPath DefaultPawnDataOverride;
 
 	/** Default experience to load if no experience is found. */
-	UPROPERTY(Config, EditDefaultsOnly, BlueprintReadOnly, Category = Classes, AdvancedDisplay)
-	TSoftObjectPtr<UExperienceDefinition> DefaultExperience;
+	UPROPERTY(Config, EditDefaultsOnly, BlueprintReadOnly, Category = Classes, AdvancedDisplay, meta = (AllowedTypes = "ExperienceDefinition"))
+	FPrimaryAssetId DefaultExperienceOverride;
 };
 
 /**

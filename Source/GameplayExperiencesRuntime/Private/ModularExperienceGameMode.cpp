@@ -13,10 +13,12 @@
 #define LOCTEXT_NAMESPACE "ModularExperienceGameMode"
 #endif
 
+#include "ExperienceAssetManager.h"
 #include "ExperiencePawnData.h"
 #include "ExperienceWorldSettings.h"
 #include "GameplayExperiencesLog.h"
 #include "ModularExperienceGameState.h"
+#include "Developer/ExperienceGameSettings.h"
 #include "Engine/AssetManager.h"
 #include "Kismet/GameplayStatics.h"
 
@@ -60,10 +62,20 @@ const UExperiencePawnData* AModularExperienceGameModeBase::GetPawnDataForControl
 		}
 
 		// If none found, fall back to the default pawn data
-		if (DefaultPawnData.IsValid())
+
+		// Do we override the default pawn data?
+		if (DefaultPawnDataOverride.IsValid())
 		{
-			return DefaultPawnData.LoadSynchronous();
+			const UExperiencePawnData* ThisPawnData =
+				UExperienceAssetManager::Get().GetAsset<UExperiencePawnData>(TSoftObjectPtr(DefaultPawnDataOverride));
+
+			if (ThisPawnData)
+			{
+				return ThisPawnData;
+			}
 		}
+
+		return UExperienceAssetManager::Get().GetDefaultPawnData();
 	}
 
 	// No experience loaded yet?
@@ -161,14 +173,34 @@ void AModularExperienceGameModeBase::HandleMatchAssignmentIfNotExpectingOne()
 			return;
 		}
 
-		ExperienceId = AssetManager.GetPrimaryAssetIdForPath(DefaultExperience.ToSoftObjectPath());
-		if (!ExperienceId.IsValid())
+		// See if we override the default experience
+		if (DefaultExperienceOverride.IsValid())
 		{
-			EXPERIENCE_LOG(Error, TEXT("%s.DefaultExperience is %s but that failed to resolve into an asset ID."),
-				*GetPathNameSafe(this), *DefaultExperience.ToString());
+			ExperienceId = DefaultExperienceOverride;
+
+			if (ExperienceId.IsValid() && !AssetManager.GetPrimaryAssetData(ExperienceId, Dummy))
+			{
+				EXPERIENCE_LOG(Error, TEXT("%s.DefaultExperience is %s but that failed to resolve into an asset ID."),
+					*GetPathNameSafe(this), *DefaultExperienceOverride.ToString());
+
+				ExperienceId = FPrimaryAssetId();
+			}
+
+			ExperienceIdSource = TEXT("Default Experience Game Mode");
 		}
 
-		ExperienceIdSource = TEXT("Default Experience");
+		if (!ExperienceId.IsValid())
+		{
+			// Fall back to the default experience
+			ExperienceId = UExperienceGameSettings::Get()->DefaultExperience;
+			if (ExperienceId.IsValid() && !AssetManager.GetPrimaryAssetData(ExperienceId, Dummy))
+			{
+				EXPERIENCE_LOG(Error, TEXT("Default experience '%s' is not valid, falling back to no experience"), *ExperienceId.ToString());
+			}
+		
+
+			ExperienceIdSource = TEXT("Default Experience");	
+		}
 	}
 
 	OnMatchAssignmentGiven(ExperienceId, ExperienceIdSource);
@@ -226,9 +258,12 @@ void AModularExperienceGameModeBase::InitGameState()
 	Super::InitGameState();
 
 	UExperienceManagerComponent* ExperienceMgr = GameState->FindComponentByClass<UExperienceManagerComponent>();
-	check(ExperienceMgr);
+	ensureMsgf(ExperienceMgr, TEXT("Game state %s is missing a UExperienceManagerComponent. Please implement if you are planning to use experiences."), *GetPathNameSafe(GameState));
 
-	ExperienceMgr->CallOrRegister_OnExperienceLoaded(FOnExperienceLoaed::FDelegate::CreateUObject(this, &ThisClass::OnExperienceLoaded));
+	if (ExperienceMgr)
+	{
+		ExperienceMgr->CallOrRegister_OnExperienceLoaded(FOnExperienceLoaed::FDelegate::CreateUObject(this, &ThisClass::OnExperienceLoaded));	
+	}
 }
 
 UClass* AModularExperienceGameModeBase::GetDefaultPawnClassForController_Implementation(AController* InController)

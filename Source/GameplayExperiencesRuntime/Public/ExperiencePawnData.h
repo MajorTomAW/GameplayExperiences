@@ -6,6 +6,7 @@
 
 #include "ExperiencePawnData.generated.h"
 
+class UInputConfig;
 /**
  * Experience data asset that contains properties used to define a pawn for the experience. 
  */
@@ -21,4 +22,8 @@ public:
 	/** Class to instantiate for this pawn. */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Pawn")
 	TSubclassOf<APawn> PawnClass;
+
+	/** Input config to use for player-controlled pawns. */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Pawn")
+	TSoftObjectPtr<UInputConfig> InputConfig;
 };

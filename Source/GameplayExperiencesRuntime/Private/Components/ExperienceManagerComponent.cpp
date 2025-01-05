@@ -30,6 +30,24 @@ UExperienceManagerComponent::UExperienceManagerComponent(const FObjectInitialize
 	SetIsReplicatedByDefault(true);
 }
 
+UExperienceManagerComponent* UExperienceManagerComponent::Get(const UObject* WorldContextObject)
+{
+	if (const UWorld* World = GEngine->GetWorldFromContextObject(WorldContextObject, EGetWorldErrorMode::LogAndReturnNull))
+	{
+		if (World->GetGameState())
+		{
+			return Get(World->GetGameState());
+		}
+	}
+
+	return nullptr;
+}
+
+UExperienceManagerComponent* UExperienceManagerComponent::Get(const AGameStateBase* GameState)
+{
+	return GameState->FindComponentByClass<UExperienceManagerComponent>();
+}
+
 void UExperienceManagerComponent::EndPlay(const EEndPlayReason::Type EndPlayReason)
 {
 	Super::EndPlay(EndPlayReason);
