@@ -50,6 +50,14 @@
 		{
 			"Name": "CommonLoadingScreen",
 			"Enabled": true
+		},
+		{
+			"Name": "GameplayAbilities",
+			"Enabled": true
+		},
+		{
+			"Name": "ModularGameplayAbilities",
+			"Enabled": true
 		}
 	]
 }
