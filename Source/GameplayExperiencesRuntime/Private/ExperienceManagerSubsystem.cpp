@@ -9,6 +9,16 @@
 
 #if WITH_EDITOR
 
+UExperienceManagerSubsystem::UExperienceManagerSubsystem()
+{
+	ensure(StateChain.Num() == 4);
+}
+
+UExperienceManagerSubsystem* UExperienceManagerSubsystem::Get()
+{
+	return GEngine->GetEngineSubsystem<UExperienceManagerSubsystem>();
+}
+
 void UExperienceManagerSubsystem::OnPlayInEditorBegun()
 {
 	ensure(GameFeaturePluginRequestCountMap.IsEmpty());

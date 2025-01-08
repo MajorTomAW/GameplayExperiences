@@ -9,6 +9,11 @@
 
 UExperienceGameSettings::UExperienceGameSettings()
 {
+	StateChain.Reserve(4);
+	StateChain.Add(FGameplayTag());
+	StateChain.Add(FGameplayTag());
+	StateChain.Add(FGameplayTag());
+	StateChain.Add(FGameplayTag());
 }
 
 UExperienceGameSettings* UExperienceGameSettings::Get()
@@ -24,6 +29,12 @@ FName UExperienceGameSettings::GetCategoryName() const
 FText UExperienceGameSettings::GetSectionText() const
 {
 	return NSLOCTEXT("ExperienceDeveloperSettings", "ExperienceDeveloperSettings", "Gameplay Experiences");
+}
+
+void UExperienceGameSettings::OverrideConfigSection(FString& InOutSectionName)
+{
+	// Mirror the exact properties
+	InOutSectionName = TEXT("/Script/GameplayExperiencesRuntime.ExperienceManagerSubsystem");
 }
 
 #if WITH_EDITOR

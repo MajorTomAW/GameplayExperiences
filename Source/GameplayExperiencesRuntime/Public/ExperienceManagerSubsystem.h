@@ -2,6 +2,7 @@
 
 #pragma once
 
+#include "GameplayTagContainer.h"
 #include "Subsystems/EngineSubsystem.h"
 
 #include "ExperienceManagerSubsystem.generated.h"
@@ -10,12 +11,15 @@
  * Manager for experiences
  * Primarily for arbitration between multiple PIE sessions
  */
-UCLASS(MinimalAPI)
+UCLASS(MinimalAPI, Config = Game)
 class UExperienceManagerSubsystem : public UEngineSubsystem
 {
 	GENERATED_BODY()
 
 public:
+	UExperienceManagerSubsystem();
+	static UExperienceManagerSubsystem* Get();
+	
 #if WITH_EDITOR
 	GAMEPLAYEXPERIENCESRUNTIME_API void OnPlayInEditorBegun();
 
@@ -25,6 +29,15 @@ public:
 	static void NotifyOfPluginActivation(const FString PluginURL) {}
 	static bool RequestToDeactivatePlugin(const FString PluginURl) { return true; }
 #endif
+
+	FGameplayTag GetTag_Spawned() const { return StateChain[0]; }
+	FGameplayTag GetTag_Available() const { return StateChain[1]; }
+	FGameplayTag GetTag_Initialized() const { return StateChain[2]; }
+	FGameplayTag GetTag_Ready() const { return StateChain[3]; }
+
+public:
+	UPROPERTY(Config)
+	TArray<FGameplayTag> StateChain;
 
 private:
 	/** Map of requests to active count for a given game feature plugin. (allow first in, last out management during PIE) */

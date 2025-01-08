@@ -45,7 +45,7 @@ public:
 	/** Retrieves an ability input action by its Gameplay Tag. */
 	const UInputAction* FindAbilityInputActionByTag(const FGameplayTag& Tag, bool bLogNotFound = true) const;
 
-protected:
+public:
 	/** List of native input actions used by the owner. These input actions are mapped to Gameplay Tags but must be manually bound. */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Input", meta = (TitleProperty = "{InputAction} -> {GameplayTag}"))
 	TArray<FInputConfig_ActionBinding> NativeInputActions;

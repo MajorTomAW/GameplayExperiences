@@ -7,6 +7,8 @@
 #include "ExperiencePawnData.generated.h"
 
 class UInputConfig;
+class UModularAbilityTagRelationshipMapping;
+
 /**
  * Experience data asset that contains properties used to define a pawn for the experience. 
  */
@@ -25,5 +27,9 @@ public:
 
 	/** Input config to use for player-controlled pawns. */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Pawn")
-	TSoftObjectPtr<UInputConfig> InputConfig;
+	TObjectPtr<UInputConfig> InputConfig;
+
+	/** The gameplay tag relationship mapping to use for this pawn. */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Abilities")
+	TObjectPtr<UModularAbilityTagRelationshipMapping> TagRelationshipMapping;
 };

@@ -113,6 +113,17 @@ void UExperienceManagerComponent::EndPlay(const EEndPlayReason::Type EndPlayReas
 	}
 }
 
+bool UExperienceManagerComponent::ShouldShowLoadingScreen(FString& OutReason) const
+{
+	if (LoadState != EExperienceLoadState::Loaded)
+	{
+		OutReason = TEXT("Loading the game experience");
+		return true;
+	}
+
+	return false;
+}
+
 void UExperienceManagerComponent::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
 {
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
@@ -270,7 +281,7 @@ void UExperienceManagerComponent::StartExperienceLoad()
 	}
 	else
 	{
-		CombinedHandle->BindCancelDelegate(OnAssetsLoadedDelegate);
+		CombinedHandle->BindCompleteDelegate(OnAssetsLoadedDelegate);
 		CombinedHandle->BindCancelDelegate(FStreamableDelegate::CreateLambda([OnAssetsLoadedDelegate]()
 		{
 			OnAssetsLoadedDelegate.ExecuteIfBound();

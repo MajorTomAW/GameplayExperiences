@@ -18,6 +18,7 @@
 #include "ExperienceWorldSettings.h"
 #include "GameplayExperiencesLog.h"
 #include "ModularExperienceGameState.h"
+#include "Components/ExperiencePawnExtensionComponent.h"
 #include "Developer/ExperienceGameSettings.h"
 #include "Engine/AssetManager.h"
 #include "Kismet/GameplayStatics.h"
@@ -67,7 +68,7 @@ const UExperiencePawnData* AModularExperienceGameModeBase::GetPawnDataForControl
 		if (DefaultPawnDataOverride.IsValid())
 		{
 			const UExperiencePawnData* ThisPawnData =
-				UExperienceAssetManager::Get().GetAsset<UExperiencePawnData>(TSoftObjectPtr(DefaultPawnDataOverride));
+				UExperienceAssetManager::Get().GetAsset<UExperiencePawnData>(TSoftObjectPtr<UExperiencePawnData>(DefaultPawnDataOverride));
 
 			if (ThisPawnData)
 			{
@@ -282,7 +283,39 @@ UClass* AModularExperienceGameModeBase::GetDefaultPawnClassForController_Impleme
 APawn* AModularExperienceGameModeBase::SpawnDefaultPawnAtTransform_Implementation(
 	AController* NewPlayer, const FTransform& SpawnTransform)
 {
-	return Super::SpawnDefaultPawnAtTransform_Implementation(NewPlayer, SpawnTransform);
+	FActorSpawnParameters SpawnParams;
+	SpawnParams.Instigator = GetInstigator();
+	SpawnParams.ObjectFlags |= RF_Transient;
+	SpawnParams.bDeferConstruction = true;
+
+	if (UClass* PawnClass = GetDefaultPawnClassForController(NewPlayer))
+	{
+		if (APawn* SpawnedPawn = GetWorld()->SpawnActor<APawn>(PawnClass, SpawnTransform, SpawnParams))
+		{
+			if (UExperiencePawnExtensionComponent* PawnExtensionCom = UExperiencePawnExtensionComponent::FindPawnExtensionComponent(SpawnedPawn))
+			{
+				if (const UExperiencePawnData* PawnData = GetPawnDataForController(NewPlayer))
+				{
+					PawnExtensionCom->SetPawnData(PawnData);
+				}
+				else
+				{
+					EXPERIENCE_LOG(Error, TEXT("Game mode was unable to set PawnData on the spawned pawn [%s]."), *GetNameSafe(SpawnedPawn));
+				}
+			}
+
+			SpawnedPawn->FinishSpawning(SpawnTransform);
+			return SpawnedPawn;
+		}
+
+		EXPERIENCE_LOG(Error, TEXT("Game mode was unable to spawn Pawn of class [%s] at [%s]."), *GetNameSafe(PawnClass), *SpawnTransform.ToHumanReadableString());
+	}
+	else
+	{
+		EXPERIENCE_LOG(Error, TEXT("Game mode was unable to spawn Pawn due to NULL pawn class."));
+	}
+
+	return nullptr;
 }
 
 AActor* AModularExperienceGameModeBase::ChoosePlayerStart_Implementation(AController* Player)

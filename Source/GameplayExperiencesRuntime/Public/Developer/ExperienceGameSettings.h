@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "GameplayTagContainer.h"
 #include "Engine/DeveloperSettings.h"
 #include "ExperienceGameSettings.generated.h"
 
@@ -22,6 +23,7 @@ public:
 	//~ Begin UDeveloperSettings Interface
 	virtual FName GetCategoryName() const override;
 	virtual FText GetSectionText() const override;
+	virtual void OverrideConfigSection(FString& InOutSectionName) override;
 	//~ End UDeveloperSettings Interface
 
 protected:
@@ -46,4 +48,9 @@ public:
 	/** The default pawn data to use if no pawn data is specified by the current experience. */
 	UPROPERTY(Config, EditDefaultsOnly, Category = "Defaults", meta = (MetaClass="/Script/GameplayExperiencesRuntime.ExperiencePawnData", ConfigRestartRequired = true))
 	FSoftObjectPath DefaultPawnData;
+
+protected:
+	/** The initialization state chain to use for the modular gameplay. */
+	UPROPERTY(Config, EditDefaultsOnly, Category = ModularGameplay, meta = (ConfigRestartRequired = true, Categories = "InitState", DisplayName = "State Chain (Order Matters!!!)", EditFixedOrder), EditFixedSize)
+	TArray<FGameplayTag> StateChain;
 };

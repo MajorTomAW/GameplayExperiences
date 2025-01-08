@@ -7,13 +7,17 @@ public class GameplayExperiencesRuntime : ModuleRules
         PublicDependencyModuleNames.AddRange(new[]
         { 
             "Core",
+            "SlateCore",
             "GameFeatures",
             "GameFeaturesExtension",
             "GameplayTags",
             "ModularGameplay",
             "ModularGameplayActors",
             "EnhancedInput",
-            "DeveloperSettings"
+            "DeveloperSettings",
+            "GameplayAbilities",
+            "ModularGameplayAbilities",
+            "CommonLoadingScreen"
         });
 
         PrivateDependencyModuleNames.AddRange(new[]

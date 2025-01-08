@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "LoadingProcessInterface.h"
 #include "Components/GameStateComponent.h"
 #include "ExperienceManagerComponent.generated.h"
 
@@ -29,8 +30,8 @@ enum class EExperienceLoadState
 /**
  * Manager component that manages the loading and unloading of gameplay experience.
  */
-UCLASS(Config = Game)
-class GAMEPLAYEXPERIENCESRUNTIME_API UExperienceManagerComponent : public UGameStateComponent
+UCLASS(Config = Game, ClassGroup = (GameplayExperiences))
+class GAMEPLAYEXPERIENCESRUNTIME_API UExperienceManagerComponent : public UGameStateComponent, public ILoadingProcessInterface
 {
 	GENERATED_BODY()
 
@@ -43,6 +44,10 @@ public:
 	//~ Begin UActorComponent Interface
 	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
 	//~ End UActorComponent Interface
+
+	//~ Begin ILoadingProcessInterface
+	virtual bool ShouldShowLoadingScreen(FString& OutReason) const override;
+	//~ End ILoadingProcessInterface
 
 	/** Returns true if the experience has been fully loaded. */
 	bool IsExperienceLoaded() const;
