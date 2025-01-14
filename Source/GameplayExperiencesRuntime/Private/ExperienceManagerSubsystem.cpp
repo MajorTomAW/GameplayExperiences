@@ -2,16 +2,15 @@
 
 
 #include "ExperienceManagerSubsystem.h"
-
+#include "Engine/Engine.h"
+#include "Engine/World.h"
+#include "Engine/GameInstance.h"
 #include "GameplayExperiencesLog.h"
 
 #include UE_INLINE_GENERATED_CPP_BY_NAME(ExperienceManagerSubsystem)
 
-#if WITH_EDITOR
-
 UExperienceManagerSubsystem::UExperienceManagerSubsystem()
 {
-	ensure(StateChain.Num() == 4);
 }
 
 UExperienceManagerSubsystem* UExperienceManagerSubsystem::Get()
@@ -19,6 +18,7 @@ UExperienceManagerSubsystem* UExperienceManagerSubsystem::Get()
 	return GEngine->GetEngineSubsystem<UExperienceManagerSubsystem>();
 }
 
+#if WITH_EDITOR
 void UExperienceManagerSubsystem::OnPlayInEditorBegun()
 {
 	ensure(GameFeaturePluginRequestCountMap.IsEmpty());
@@ -35,6 +35,8 @@ void UExperienceManagerSubsystem::NotifyOfPluginActivation(const FString PluginU
 		// Track the number of requesters who have requested this plugin to be activated
 		int32& Count = MutableThis->GameFeaturePluginRequestCountMap.FindOrAdd(PluginURL);
 		++Count;
+
+		EXPERIENCE_LOG(Log, TEXT("Request to activate plugin '%s' (new listeners count %d)"), *PluginURL, Count);
 	}
 }
 

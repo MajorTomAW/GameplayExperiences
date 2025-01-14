@@ -128,6 +128,8 @@ void UExperienceHeroComponent::HandleChangeInitState(
 		{
 			InitializePlayerInput(Pawn->InputComponent);
 		}
+
+		OnDataInitialized(PawnData);
 	}
 }
 

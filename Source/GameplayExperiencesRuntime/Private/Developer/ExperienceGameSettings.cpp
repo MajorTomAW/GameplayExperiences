@@ -26,10 +26,12 @@ FName UExperienceGameSettings::GetCategoryName() const
 	return FApp::GetProjectName();
 }
 
+#if WITH_EDITOR
 FText UExperienceGameSettings::GetSectionText() const
 {
 	return NSLOCTEXT("ExperienceDeveloperSettings", "ExperienceDeveloperSettings", "Gameplay Experiences");
 }
+#endif
 
 void UExperienceGameSettings::OverrideConfigSection(FString& InOutSectionName)
 {

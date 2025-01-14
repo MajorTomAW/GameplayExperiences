@@ -11,8 +11,8 @@
  * Manager for experiences
  * Primarily for arbitration between multiple PIE sessions
  */
-UCLASS(MinimalAPI, Config = Game)
-class UExperienceManagerSubsystem : public UEngineSubsystem
+UCLASS(Config = Game)
+class GAMEPLAYEXPERIENCESRUNTIME_API UExperienceManagerSubsystem : public UEngineSubsystem
 {
 	GENERATED_BODY()
 
@@ -21,7 +21,7 @@ public:
 	static UExperienceManagerSubsystem* Get();
 	
 #if WITH_EDITOR
-	GAMEPLAYEXPERIENCESRUNTIME_API void OnPlayInEditorBegun();
+	void OnPlayInEditorBegun();
 
 	static void NotifyOfPluginActivation(const FString PluginURL);
 	static bool RequestToDeactivatePlugin(const FString PluginURl);

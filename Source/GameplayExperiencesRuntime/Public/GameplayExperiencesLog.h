@@ -6,35 +6,16 @@
 
 DECLARE_LOG_CATEGORY_EXTERN(LogGameplayExperiences, Log, All);
 
-#if PLATFORM_DESKTOP
-#define EXPERIENCE_LOG(Verbosity, Format, ...) UE_LOG(LogGameplayExperiences, Verbosity, Format, ##__VA_ARGS__)
-#endif
-
-inline FString GetClientServerContextString(UObject* Context)
+namespace GameplayExperiences
 {
-	ENetRole Role = ROLE_None;
-
-	if (AActor* Actor = Cast<AActor>(Context))
-	{
-		Role = Actor->GetLocalRole();
-	}
-	else if (UActorComponent* Component = Cast<UActorComponent>(Context))
-	{
-		Role = Component->GetOwnerRole();
-	}
-
-	if (Role != ROLE_None)
-	{
-		return Role == ROLE_Authority ? TEXT("Server") : TEXT("Client");
-	}
+	FString GetClientServerContextString(UObject* Context);
 	
-#if WITH_EDITOR
-	if (GIsEditor)
-	{
-		extern ENGINE_API FString GPlayInEditorContextString;
-		return GPlayInEditorContextString;
-	}
-#endif
+#define EXPERIENCE_LOG(Verbosity, Format, ...) \
+UE_LOG(LogGameplayExperiences, Verbosity, Format, ##__VA_ARGS__)
 
-	return TEXT("[]");
+#define EXPERIENCE_C_LOG(Verbosity, Format, ...) \
+UE_LOG(LogGameplayExperiences, Verbosity, TEXT("%s: ") Format, *FString(__FUNCTION__), ##__VA_ARGS__)
+
+#define EXPERIENCE_NET_LOG(Verbosity, Object, Format, ...) \
+UE_LOG(LogGameplayExperiences, Verbosity, TEXT("%s: ") Format, *GetClientServerContextString(Object), ##__VA_ARGS__)
 }

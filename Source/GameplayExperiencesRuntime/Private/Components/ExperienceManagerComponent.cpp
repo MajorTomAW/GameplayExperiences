@@ -15,6 +15,8 @@
 
 #include UE_INLINE_GENERATED_CPP_BY_NAME(ExperienceManagerComponent)
 
+using namespace GameplayExperiences;
+
 //@TODO: Async load the experience definition itself
 //@TODO: Handle failures explicitly (go into a 'completed but failed' state rather than check()-ing)
 //@TODO: Do the action phases at the appropriate times instead of all at once
@@ -213,9 +215,9 @@ void UExperienceManagerComponent::StartExperienceLoad()
 	check(CurrentExperience != nullptr);
 	check(LoadState == EExperienceLoadState::Unloaded);
 
-	EXPERIENCE_LOG(Log, TEXT("Starting experience load for '%s' (%s)"),
-		*CurrentExperience->GetPrimaryAssetId().ToString(),
-		*GetClientServerContextString(this));
+	EXPERIENCE_NET_LOG(Log, this, TEXT("Starting experience load for '%s'"),
+		*CurrentExperience->GetPrimaryAssetId().ToString());
+	
 
 	LoadState = EExperienceLoadState::Loading;
 
@@ -301,9 +303,8 @@ void UExperienceManagerComponent::OnExperienceLoadComplete()
 	check(LoadState == EExperienceLoadState::Loading);
 	check(CurrentExperience != nullptr);
 
-	EXPERIENCE_LOG(Log, TEXT("Experience '%s' (%s) load completed!"),
-		*CurrentExperience->GetPrimaryAssetId().ToString(),
-		*GetClientServerContextString(this));
+	EXPERIENCE_NET_LOG(Log, this, TEXT("Experience '%s' load completed!"),
+		*CurrentExperience->GetPrimaryAssetId().ToString());
 
 	// Find the URLs for our GameFeaturePlugins
 	// Filtering out dupes and invalid mappings
@@ -335,6 +336,7 @@ void UExperienceManagerComponent::OnExperienceLoadComplete()
 	CollectGameFeaturePluginURLs(CurrentExperience, FeaturePluginList);
 
 	// Load and activate the features
+	NumGameFeaturePluginsLoading = GameFeaturePluginURLs.Num();
 	if (NumGameFeaturePluginsLoading > 0)
 	{
 		LoadState = EExperienceLoadState::LoadingGameFeatures;

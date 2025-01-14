@@ -34,7 +34,7 @@ class GAMEPLAYEXPERIENCESRUNTIME_API UExperienceHeroComponent : public UPawnComp
 	GENERATED_BODY()
 
 public:
-	UExperienceHeroComponent(const FObjectInitializer& ObjectInitializer = FObjectInitializer::Get());
+	UExperienceHeroComponent(const FObjectInitializer& ObjectInitializer);
 
 	/** Static getter that returns the hero component if one exists on the specified actor. */
 	UFUNCTION(BlueprintCallable, BlueprintPure, Category = GameplayExperiences)
@@ -57,6 +57,7 @@ public:
 	/** Initializes the player input with the given input component. */
 	void InitializePlayerInput(UInputComponent* InputComponent);
 	virtual void OnInitializePlayerInput(UInputComponent* InputComponent, const UInputConfig* InputConfig) {}
+	virtual void OnDataInitialized(const class UExperiencePawnData* PawnData) {}
 
 protected:
 	//~ Begin UActorComponent interface

@@ -22,8 +22,10 @@ public:
 
 	//~ Begin UDeveloperSettings Interface
 	virtual FName GetCategoryName() const override;
-	virtual FText GetSectionText() const override;
 	virtual void OverrideConfigSection(FString& InOutSectionName) override;
+#if WITH_EDITOR
+	virtual FText GetSectionText() const override;
+#endif
 	//~ End UDeveloperSettings Interface
 
 protected:

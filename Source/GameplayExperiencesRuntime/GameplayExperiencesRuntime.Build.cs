@@ -7,6 +7,8 @@ public class GameplayExperiencesRuntime : ModuleRules
         PublicDependencyModuleNames.AddRange(new[]
         { 
             "Core",
+            "CoreUObject",
+            "Engine",
             "SlateCore",
             "GameFeatures",
             "GameFeaturesExtension",
@@ -17,13 +19,12 @@ public class GameplayExperiencesRuntime : ModuleRules
             "DeveloperSettings",
             "GameplayAbilities",
             "ModularGameplayAbilities",
-            "CommonLoadingScreen"
+            "CommonLoadingScreen",
         });
 
         PrivateDependencyModuleNames.AddRange(new[]
         {
             "CoreUObject", 
-            "Engine",
             "NetCore",
         });
     }
