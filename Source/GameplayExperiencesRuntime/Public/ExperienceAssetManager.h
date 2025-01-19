@@ -23,6 +23,10 @@ public:
 	static UExperienceAssetManager& Get();
 
 	/** Returns the global game data asset */
+	UFUNCTION(BlueprintCallable, Category = "Experience", meta = (DisplayName = "Get Game Data", DeterminesOutputType = "GameDataClass"))
+	static const UExperienceGameData* K2_GetGameData(const TSubclassOf<UExperienceGameData> GameDataClass);
+
+	/** Returns the global game data asset */
 	const UExperienceGameData& GetGameData();
 	const UExperiencePawnData* GetDefaultPawnData() const;
 
@@ -39,7 +43,7 @@ public:
 		return *CastChecked<const GameDataClass>(LoadGameDataOfClass(GameDataClass::StaticClass(), Path, GameDataClass::StaticClass()->GetFName()));
 	}
 
-	/** Returns the asset referenced by the soft object pointer. Performs a syncrhonous load if necessary. */
+	/** Returns the asset referenced by the soft object pointer. Performs a synchronous load if necessary. */
 	template <typename AssetType>
 	static AssetType* GetAsset(const TSoftObjectPtr<AssetType>& AssetPtr, bool bKeepInMemory = true)
 	{

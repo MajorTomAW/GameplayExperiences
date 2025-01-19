@@ -29,6 +29,11 @@ UExperienceAssetManager& UExperienceAssetManager::Get()
 	return *NewObject<UExperienceAssetManager>();
 }
 
+const UExperienceGameData* UExperienceAssetManager::K2_GetGameData(const TSubclassOf<UExperienceGameData> GameDataClass)
+{
+	return &Get().GetGameData();
+}
+
 const UExperienceGameData& UExperienceAssetManager::GetGameData()
 {
 	return GetOrLoadTypedGameData<UExperienceGameData>(TSoftObjectPtr<UExperienceGameData>(UExperienceGameSettings::Get()->GameDataPath));

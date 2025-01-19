@@ -17,4 +17,14 @@ class GAMEPLAYEXPERIENCESRUNTIME_API UExperienceGameData : public UPrimaryDataAs
 public:
 	UExperienceGameData();
 	static const UExperienceGameData& Get();
+
+	template <typename T>
+	static const T* Get()
+	{
+		return Cast<T>(Get());
+	}
+
+	//~ Begin UPrimaryDataAsset Interface
+	virtual FPrimaryAssetId GetPrimaryAssetId() const override;
+	//~ End UPrimaryDataAsset Interface
 };
