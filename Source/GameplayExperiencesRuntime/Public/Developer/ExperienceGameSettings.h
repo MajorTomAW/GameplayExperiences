@@ -7,6 +7,7 @@
 #include "Engine/DeveloperSettings.h"
 #include "ExperienceGameSettings.generated.h"
 
+class UExperiencePawnData;
 class UExperienceGameData;
 /**
  * Developer settings for the gameplay experiences framework.
@@ -44,12 +45,12 @@ public:
 	FPrimaryAssetId DefaultExperience;
 
 	/** The default game data to load for this project. */
-	UPROPERTY(Config, EditDefaultsOnly, Category = "Defaults", meta = (MetaClass="/Script/GameplayExperiencesRuntime.ExperienceGameData", ConfigRestartRequired = true))
-	FSoftObjectPath GameDataPath;
+	UPROPERTY(Config, EditDefaultsOnly, Category = "Defaults", meta = (ConfigRestartRequired = true))
+	TSoftObjectPtr<UExperienceGameData> GameDataPath;
 
 	/** The default pawn data to use if no pawn data is specified by the current experience. */
-	UPROPERTY(Config, EditDefaultsOnly, Category = "Defaults", meta = (MetaClass="/Script/GameplayExperiencesRuntime.ExperiencePawnData", ConfigRestartRequired = true))
-	FSoftObjectPath DefaultPawnData;
+	UPROPERTY(Config, EditDefaultsOnly, Category = "Defaults", meta = (ConfigRestartRequired = true))
+	TSoftObjectPtr<UExperiencePawnData> DefaultPawnData;
 
 protected:
 	/** The initialization state chain to use for the modular gameplay. */

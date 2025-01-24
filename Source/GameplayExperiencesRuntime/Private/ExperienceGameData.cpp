@@ -18,5 +18,5 @@ const UExperienceGameData& UExperienceGameData::Get()
 
 FPrimaryAssetId UExperienceGameData::GetPrimaryAssetId() const
 {
-	return FPrimaryAssetId("GameData", GetFName());
+	return FPrimaryAssetId("ExperienceGameData");
 }

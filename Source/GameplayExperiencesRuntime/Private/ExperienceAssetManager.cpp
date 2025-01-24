@@ -36,13 +36,12 @@ const UExperienceGameData* UExperienceAssetManager::K2_GetGameData(const TSubcla
 
 const UExperienceGameData& UExperienceAssetManager::GetGameData()
 {
-	return GetOrLoadTypedGameData<UExperienceGameData>(TSoftObjectPtr<UExperienceGameData>(UExperienceGameSettings::Get()->GameDataPath));
+	return GetOrLoadTypedGameData<UExperienceGameData>(UExperienceGameSettings::Get()->GameDataPath);
 }
 
 const UExperiencePawnData* UExperienceAssetManager::GetDefaultPawnData() const
 {
-	FSoftObjectPath PawnDataPath = UExperienceGameSettings::Get()->DefaultPawnData;
-	return GetAsset<UExperiencePawnData>(TSoftObjectPtr<UExperiencePawnData>(PawnDataPath));
+	return GetAsset(UExperienceGameSettings::Get()->DefaultPawnData);
 }
 
 UObject* UExperienceAssetManager::SynchronousLoadAsset(const FSoftObjectPath& Path)
