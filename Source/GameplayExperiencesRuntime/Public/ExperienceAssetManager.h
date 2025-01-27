@@ -3,11 +3,15 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "Developer/ExperienceGameSettings.h"
+#include "ExperienceGameData.h"
 #include "Engine/AssetManager.h"
+
 #include "ExperienceAssetManager.generated.h"
 
 class UExperiencePawnData;
 class UExperienceGameData;
+
 /**
  * Asset manager for the Experience system.
  * Specifically, responsible for loading and managing Experience assets. (Global Game Data)
@@ -29,6 +33,13 @@ public:
 	/** Returns the global game data asset */
 	const UExperienceGameData& GetGameData();
 	const UExperiencePawnData* GetDefaultPawnData() const;
+
+	/** Returns the global game data asset typed */
+	template <typename GameData>
+	const GameData& GetGameData()
+	{
+		return GetOrLoadTypedGameData<GameData>(UExperienceGameSettings::Get()->GameDataPath);
+	}
 
 	/** Loads a types game data asset */
 	template <typename GameDataClass>
@@ -83,8 +94,7 @@ protected:
 	/** Loaded version of the game data asset. (Can be multiple assets based on your project's needs) */
 	UPROPERTY(Transient)
 	TMap<TObjectPtr<UClass>, TObjectPtr<UPrimaryDataAsset>> GameDataMap;
-
-private:
+	
 	/** Assets loaded and tracked by the asset manager. */
 	UPROPERTY()
 	TSet<TObjectPtr<const UObject>> LoadedAssets;
