@@ -36,9 +36,9 @@ public:
 
 	/** Returns the global game data asset typed */
 	template <typename GameData>
-	const GameData& GetGameData()
+	const GameData& GetGameDataTyped()
 	{
-		return GetOrLoadTypedGameData<GameData>(UExperienceGameSettings::Get()->GameDataPath);
+		return (GameData&)GetGameData();
 	}
 
 	/** Loads a types game data asset */
