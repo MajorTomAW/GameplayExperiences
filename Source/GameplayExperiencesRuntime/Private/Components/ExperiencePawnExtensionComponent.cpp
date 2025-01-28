@@ -97,7 +97,7 @@ bool UExperiencePawnExtensionComponent::CanChangeInitState(
 		// Pawn data is required
 		if (PawnData == nullptr)
 		{
-			EXPERIENCE_LOG(Warning, TEXT("PawnData is required to transition from %s to %s"), *CurrentState.ToString(), *DesiredState.ToString());
+			EXPERIENCE_LOG(Log, TEXT("PawnData is required to transition from %s to %s"), *CurrentState.ToString(), *DesiredState.ToString());
 			return false;
 		}
 
@@ -109,7 +109,7 @@ bool UExperiencePawnExtensionComponent::CanChangeInitState(
 			// Check for a valid controller
 			if (!GetController<AController>())
 			{
-				EXPERIENCE_LOG(Warning, TEXT("No controller found to transition from %s to %s"), *CurrentState.ToString(), *DesiredState.ToString());
+				EXPERIENCE_LOG(Log, TEXT("No controller found to transition from %s to %s"), *CurrentState.ToString(), *DesiredState.ToString());
 				return false;
 			}
 		}
