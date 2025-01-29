@@ -4,6 +4,7 @@
 #include "Components/ExperiencePawnExtensionComponent.h"
 
 #include "AbilitySystemComponent.h"
+#include "AbilitySystemGlobals.h"
 #include "ExperienceManagerSubsystem.h"
 #include "GameplayExperiencesLog.h"
 #include "ModularAbilitySystemComponent.h"
@@ -274,6 +275,9 @@ void UExperiencePawnExtensionComponent::InitializeAbilitySystem(UAbilitySystemCo
 			ModularAbilitySystem->SetTagRelationshipMapping(PawnData->TagRelationshipMapping);
 		}
 	}
+
+	
+	UAbilitySystemGlobals::Get().GetAttributeSetInitter()->InitAttributeSetDefaults(AbilitySystem, "Health", 1, true);
 
 	OnAbilitySystemInitialized.Broadcast();
 }

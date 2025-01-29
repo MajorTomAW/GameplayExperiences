@@ -108,4 +108,8 @@ protected:
 	/** Pointer to the ability system component. Cached for quick access. */
 	UPROPERTY(Transient)
 	TObjectPtr<UAbilitySystemComponent> AbilitySystem;
+
+	/** List of group names to use when initializing default attribute set values */
+	UPROPERTY(EditAnywhere, Category = Pawn)
+	TArray<FName> DefaultAttributeSetGroupNames;
 };
