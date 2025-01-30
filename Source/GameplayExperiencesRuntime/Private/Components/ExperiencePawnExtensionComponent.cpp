@@ -276,8 +276,13 @@ void UExperiencePawnExtensionComponent::InitializeAbilitySystem(UAbilitySystemCo
 		}
 	}
 
-	
-	UAbilitySystemGlobals::Get().GetAttributeSetInitter()->InitAttributeSetDefaults(AbilitySystem, "Health", 1, true);
+	if (!DefaultAttributeSetGroupNames.IsEmpty())
+	{
+		for (const FName& GroupName : DefaultAttributeSetGroupNames)
+		{
+			UAbilitySystemGlobals::Get().GetAttributeSetInitter()->InitAttributeSetDefaults(AbilitySystem, GroupName, 1, true);
+		}
+	}
 
 	OnAbilitySystemInitialized.Broadcast();
 }
