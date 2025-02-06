@@ -31,8 +31,8 @@ public:
 	static const UExperienceGameData* K2_GetGameData(const TSubclassOf<UExperienceGameData> GameDataClass);
 
 	/** Returns the global game data asset */
-	const UExperienceGameData& GetGameData();
-	const UExperiencePawnData* GetDefaultPawnData() const;
+	virtual const UExperienceGameData& GetGameData();
+	virtual const UExperiencePawnData* GetDefaultPawnData() const;
 
 	/** Returns the global game data asset typed */
 	template <typename GameData>

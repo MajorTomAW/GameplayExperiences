@@ -37,7 +37,7 @@ const UExperienceGameData* UExperienceAssetManager::K2_GetGameData(const TSubcla
 
 const UExperienceGameData& UExperienceAssetManager::GetGameData()
 {
-	return GetOrLoadTypedGameData<UExperienceGameData>(UExperienceGameSettings::Get()->GameDataPath);
+	return GetOrLoadTypedGameData(UExperienceGameSettings::Get()->GameDataPath);
 }
 
 const UExperiencePawnData* UExperienceAssetManager::GetDefaultPawnData() const
@@ -84,12 +84,12 @@ void UExperienceAssetManager::AddLoadedAsset(const UObject* Asset)
 }
 
 UPrimaryDataAsset* UExperienceAssetManager::LoadGameDataOfClass(
-	TSubclassOf<UPrimaryDataAsset> DataClass, const TSoftObjectPtr<UPrimaryDataAsset>& Path, FPrimaryAssetType AssetType)
+	TSubclassOf<UPrimaryDataAsset> DataClass, const TSoftObjectPtr<UPrimaryDataAsset>& DataClassPath, FPrimaryAssetType AssetType)
 {
 	UPrimaryDataAsset* Asset = nullptr;
 
 	DECLARE_SCOPE_CYCLE_COUNTER(TEXT("Loading GameData Object"), STAT_GameData, STATGROUP_LoadTime);
-	if (!Path.IsNull())
+	if (!DataClassPath.IsNull())
 	{
 #if WITH_EDITOR
 		FScopedSlowTask SlowTask(0, FText::Format(NSLOCTEXT("BotaniEditor", "LoadingGameDataTask", "Loading GameData {0}"), FText::FromName(DataClass->GetFName())));
@@ -97,13 +97,13 @@ UPrimaryDataAsset* UExperienceAssetManager::LoadGameDataOfClass(
 		constexpr bool bAllowInPIE = true;
 		SlowTask.MakeDialog(bShowCancelButton, bAllowInPIE);
 #endif
-		EXPERIENCE_LOG(Log, TEXT("Loading GameData %s"), *Path.ToString());
+		EXPERIENCE_LOG(Log, TEXT("Loading GameData %s"), *DataClassPath.ToString());
 		SCOPE_LOG_TIME_IN_SECONDS(TEXT("		... GameData loaded!"), nullptr);
 
 		// This can be called recursively in the editor because it is called on demand from PostLoad so force a sync load for primary asset and async load the rest in that case
 		if (GIsEditor)
 		{
-			Asset = Path.LoadSynchronous();
+			Asset = DataClassPath.LoadSynchronous();
 			LoadPrimaryAssetsWithType(AssetType);
 		}
 		else
@@ -120,11 +120,12 @@ UPrimaryDataAsset* UExperienceAssetManager::LoadGameDataOfClass(
 	if (Asset)
 	{
 		GameDataMap.Add(DataClass, Asset);
+		LoadedAssets.Add(Asset);
 	}
 	else
 	{
-		EXPERIENCE_LOG(Fatal, TEXT("Failed to load GameData asset at %s. Type %s. This is not recoverable and likely means you do not have the correct data to run %s."),
-			*Path.ToString(), *AssetType.ToString(), FApp::GetProjectName());
+		EXPERIENCE_LOG(Fatal, TEXT("Failed to load GameData asset at %s. Type %s (class %s). This is not recoverable and likely means you do not have the correct data to run %s."),
+			*DataClassPath.ToString(), *DataClass->GetFName().ToString(),*AssetType.ToString(), FApp::GetProjectName());
 	}
 
 	return Asset;
