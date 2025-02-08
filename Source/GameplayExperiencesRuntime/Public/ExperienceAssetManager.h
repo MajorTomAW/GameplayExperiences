@@ -79,6 +79,31 @@ public:
 		return Asset;
 	}
 
+	/** Returns the subclass referenced by the soft class pointer. Performs a synchronous load if necessary. */
+	template <typename ClassType>
+	static TSubclassOf<ClassType> GetSubclass(const TSoftClassPtr<ClassType>& AssetPtr, bool bKeepInMemory = true)
+	{
+		TSubclassOf<ClassType> LoadedSubClass;
+		const FSoftObjectPath& Path = AssetPtr.ToSoftObjectPath();
+
+		if (Path.IsValid())
+		{
+			LoadedSubClass = AssetPtr.Get();
+			if (LoadedSubClass == nullptr)
+			{
+				LoadedSubClass = Cast<UClass>(SynchronousLoadAsset(Path));
+				ensureAlwaysMsgf(LoadedSubClass, TEXT("Failed to load asset class %s"), *AssetPtr.ToString());
+			}
+
+			if (LoadedSubClass && bKeepInMemory)
+			{
+				Get().AddLoadedAsset(Cast<UObject>(LoadedSubClass));
+			}
+		}
+
+		return LoadedSubClass;
+	}
+
 protected:
 	/** Performs a blocking load of the asset. */
 	static UObject* SynchronousLoadAsset(const FSoftObjectPath& Path);
