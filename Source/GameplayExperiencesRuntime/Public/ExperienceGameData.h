@@ -19,9 +19,9 @@ public:
 	static const UExperienceGameData& Get();
 
 	template <typename T>
-	static const T* Get()
+	static const T& Get()
 	{
-		return Cast<T>(Get());
+		return (T&)Get();
 	}
 
 	//~ Begin UPrimaryDataAsset Interface
