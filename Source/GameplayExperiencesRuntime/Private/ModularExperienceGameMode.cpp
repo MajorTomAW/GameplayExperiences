@@ -16,6 +16,7 @@
 #include "ExperienceAssetManager.h"
 #include "ExperiencePawnData.h"
 #include "ExperienceWorldSettings.h"
+#include "GameFeaturesSubsystem.h"
 #include "GameplayExperiencesLog.h"
 #include "ModularExperienceGameState.h"
 #include "Components/ExperiencePawnExtensionComponent.h"
@@ -336,6 +337,38 @@ void AModularExperienceGameModeBase::RequestPlayerRestartNextFrame(AController* 
 	}
 }
 
+void AModularExperienceGameModeBase::ToggleGameFeaturePlugin(FGameFeaturePluginURL& PluginURL, bool bEnable)
+{
+	FString ResolvedPluginURL;
+	UGameFeaturesSubsystem::Get().GetPluginURLByName(PluginURL.GetPluginName(), ResolvedPluginURL);
+
+	if (bEnable)
+	{
+		UGameFeaturesSubsystem::Get().LoadAndActivateGameFeaturePlugin(ResolvedPluginURL, FGameFeaturePluginLoadComplete());
+	}
+	else
+	{
+		// Unloading plugins causes garbage collection to be triggered, so we need to wait until the next frame
+		PluginsToUnloadPreWorldTick.Add(ResolvedPluginURL);
+		if (!FWorldDelegates::OnWorldTickStart.IsBoundToObject(this))
+		{
+			FWorldDelegates::OnWorldTickStart.AddUObject(this, &ThisClass::UnloadPluginsPreWorldTick);
+		}
+	}
+}
+
+void AModularExperienceGameModeBase::UnloadPluginsPreWorldTick(UWorld* World, ELevelTick TickType, float DeltaSeconds)
+{
+	for (const FString& URL : PluginsToUnloadPreWorldTick)
+	{
+		UGameFeaturesSubsystem::Get().UnloadGameFeaturePlugin(URL);
+	}
+	PluginsToUnloadPreWorldTick.Empty();
+
+	// Remove the delegate now that we're done
+	FWorldDelegates::OnWorldTickStart.RemoveAll(this);
+}
+
 bool AModularExperienceGameModeBase::ShouldSpawnAtStartSpot(AController* Player)
 {
 	return Super::ShouldSpawnAtStartSpot(Player);
@@ -399,6 +432,22 @@ void AModularExperienceGameModeBase::FailedToRestartPlayer(AController* NewPlaye
 	{
 		EXPERIENCE_LOG(Verbose, TEXT("Failed to restart player %s and GetDefaultPawnClassForController returned nullptr."), *GetPathNameSafe(NewPlayer));
 	}
+}
+
+void AModularExperienceGameModeBase::StartPlay()
+{
+	// Make sure level streaming is up to date before triggering NotifyMatchStarted
+	GEngine->BlockTillLevelStreamingCompleted(GetWorld());
+	
+	Super::StartPlay();
+}
+
+void AModularExperienceGameModeBase::EndPlay(const EEndPlayReason::Type EndPlayReason)
+{
+	Super::EndPlay(EndPlayReason);
+
+	PluginsToUnloadPreWorldTick.Empty();
+	FWorldDelegates::OnWorldTickStart.RemoveAll(this);
 }
 
 bool AModularExperienceGameModeBase::ControllerCanRestart(AController* Controller)

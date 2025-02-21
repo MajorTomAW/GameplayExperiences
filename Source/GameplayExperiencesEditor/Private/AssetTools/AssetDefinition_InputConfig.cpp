@@ -7,11 +7,11 @@
 
 #include UE_INLINE_GENERATED_CPP_BY_NAME(AssetDefinition_InputConfig)
 
-#define LOCTEXT_NAMESPACE "GameplayExperiencesEditor"
+#define LOCTEXT_NAMESPACE "GameplayExperiencesEditorPlugin"
 
 FText UAssetDefinition_InputConfig::GetAssetDisplayName() const
 {
-	return LOCTEXT("AssetDisplayName", "Input Config");
+	return LOCTEXT("AssetDisplayName_InputConfig", "Input Config");
 }
 
 FLinearColor UAssetDefinition_InputConfig::GetAssetColor() const

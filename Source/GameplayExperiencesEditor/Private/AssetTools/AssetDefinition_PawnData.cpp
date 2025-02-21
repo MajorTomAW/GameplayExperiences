@@ -7,11 +7,11 @@
 
 #include UE_INLINE_GENERATED_CPP_BY_NAME(AssetDefinition_PawnData)
 
-#define LOCTEXT_NAMESPACE "GameplayExperiencesEditor"
+#define LOCTEXT_NAMESPACE "GameplayExperiencesEditorPlugin"
 
 FText UAssetDefinition_PawnData::GetAssetDisplayName() const
 {
-	return LOCTEXT("AssetDisplayName", "Pawn Data");
+	return LOCTEXT("AssetDisplayName_PawnData", "Pawn Data");
 }
 
 FLinearColor UAssetDefinition_PawnData::GetAssetColor() const
@@ -28,7 +28,7 @@ TConstArrayView<FAssetCategoryPath> UAssetDefinition_PawnData::GetAssetCategorie
 {
 	static const auto Categories =
 	{
-		FAssetCategoryPath(LOCTEXT("CategoryLabel", "Game Features"))
+		FAssetCategoryPath(LOCTEXT("CategoryLabel_PawnData", "Game Features"))
 	};
 
 	return Categories;

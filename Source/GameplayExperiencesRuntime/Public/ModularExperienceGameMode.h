@@ -6,6 +6,7 @@
 
 #include "ModularExperienceGameMode.generated.h"
 
+struct FGameFeaturePluginURL;
 class UExperienceDefinition;
 class AActor;
 class AController;
@@ -36,15 +37,19 @@ public:
 	AModularExperienceGameModeBase(const FObjectInitializer& ObjectInitializer = FObjectInitializer::Get());
 
 	/** Retrieves the pawn data for the given controller. */
-	UFUNCTION(BlueprintCallable, Category = "Experience")
+	UFUNCTION(BlueprintCallable, Category = Experience)
 	const UExperiencePawnData* GetPawnDataForController(const AController* InController) const;
 
 	/**
 	 * Requests a restart (respawn) of the specified controller the next frame.
 	 * @param bForceReset If true, the controller will be reset and abandon the current pawn.
 	 */
-	UFUNCTION(BlueprintCallable, Category = "Experience")
-	void RequestPlayerRestartNextFrame(AController* Controller, bool bForceReset = false);
+	UFUNCTION(BlueprintCallable, Category = Experience)
+	virtual void RequestPlayerRestartNextFrame(AController* Controller, bool bForceReset = false);
+
+	/** Toggles an existing game feature plugin and activates or deactivates it. */
+	UFUNCTION(BlueprintCallable, Category = Experience)
+	virtual void ToggleGameFeaturePlugin(FGameFeaturePluginURL& PluginURL, bool bEnable);
 
 public:
 	//~ Begin AGameModeBase Interface
@@ -62,6 +67,9 @@ public:
 	virtual bool UpdatePlayerStartSpot(AController* Player, const FString& Portal, FString& OutErrorMessage) override;
 	virtual void GenericPlayerInitialization(AController* C) override;
 	virtual void FailedToRestartPlayer(AController* NewPlayer) override;
+
+	virtual void StartPlay() override;
+	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
 	//~ End AGameModeBase Interface
 
 	/** Agnostic version of PlayerCanRestart that can be used for both player and AI controllers. */
@@ -80,6 +88,8 @@ protected:
 
 	virtual bool TryDedicatedServerLogin();
 
+	virtual void UnloadPluginsPreWorldTick(UWorld* World, ELevelTick TickType, float DeltaSeconds);
+
 	/** Override to return the experience to load from the developer settings. (will be project-specific) */
 	virtual FPrimaryAssetId GetExperienceFromDeveloperSettings() const { return FPrimaryAssetId(); }
 
@@ -97,6 +107,9 @@ protected:
 	/** Default experience to load if no experience is found. */
 	UPROPERTY(Config, EditDefaultsOnly, BlueprintReadOnly, Category = Classes, AdvancedDisplay, meta = (AllowedTypes = "ExperienceDefinition"))
 	FPrimaryAssetId DefaultExperienceOverride;
+
+	/** Cached off set of plugin urls that should be unloaded next tick */
+	TSet<FString> PluginsToUnloadPreWorldTick;
 };
 
 /**

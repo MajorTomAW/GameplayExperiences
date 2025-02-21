@@ -7,11 +7,11 @@
 
 #include UE_INLINE_GENERATED_CPP_BY_NAME(AssetDefinition_ExperienceDefinition)
 
-#define LOCTEXT_NAMESPACE "GameplayExperiencesEditor"
+#define LOCTEXT_NAMESPACE "GameplayExperiencesEditorPlugin"
 
 FText UAssetDefinition_ExperienceDefinition::GetAssetDisplayName() const
 {
-	return LOCTEXT("AssetDisplayName", "Experience Definition");
+	return LOCTEXT("AssetDisplayName_ExperienceDefinition", "Experience Definition");
 }
 
 FLinearColor UAssetDefinition_ExperienceDefinition::GetAssetColor() const
@@ -28,7 +28,7 @@ TConstArrayView<FAssetCategoryPath> UAssetDefinition_ExperienceDefinition::GetAs
 {
 	static const auto Categories =
 	{
-		FAssetCategoryPath(LOCTEXT("CategoryLabel", "Game Features"))
+		FAssetCategoryPath(LOCTEXT("CategoryLabel_ExperienceDefinition", "Game Features"))
 	};
 
 	return Categories;
